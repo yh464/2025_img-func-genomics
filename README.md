@@ -1,2 +1,1 @@
-# scripts
-2025_img-func-genomics
+One-off analyses for the imaging functional genomics project.
