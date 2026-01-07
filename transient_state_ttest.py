@@ -49,8 +49,8 @@ def threshold_ts(thr, ts = ts_orig):
     ts['amplifying'] = ts.RG_ | ts.IPC_
     return ts
 
-def scdrs_assoc_test(df, group_filter = True):
-    df = df.loc[group_filter, :]
+def scdrs_assoc_test(df, group_filter = None):
+    if group_filter is not None: df = df.loc[group_filter, :]
     ctrl_columns = [col for col in df.columns if col.startswith('ctrl_norm_score')]
     n_ctrl = len(ctrl_columns)
     score_q95 = np.quantile(df['norm_score'], 0.95)
