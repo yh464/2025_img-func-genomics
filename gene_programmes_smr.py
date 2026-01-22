@@ -21,7 +21,8 @@ smr_files = [
 
 def extract_smr(smr_file, gene_set):
     smr = pd.read_table(smr_file)
-    genes = smr['probe'].intersection(gene_set)
+    gene_set = pd.Index(gene_set)
+    genes = gene_set.intersection(smr['probe'])
     out = smr.loc[smr['probe'].isin(genes),:]
     print(out)
     return out
