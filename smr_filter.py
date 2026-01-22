@@ -7,6 +7,9 @@ rg_like_ipc_genes = [gene for gene in gene_sets.index[138:] if gene in ref.index
 neuronal_like_ipc_genes = ref.loc[neuronal_like_ipc_genes, 'GENE'].values
 rg_like_ipc_genes = ref.loc[rg_like_ipc_genes, 'GENE'].values
 
+sig_tf = ['MEF2C','NFIA','NFIB','TCF4','TCF12','ZBTB20','LHX2','HMGA2','PAX6']
+sig_tf = ref.loc[sig_tf, 'GENE'].values
+
 cnmf_k = 16; cnmf_dt = '0_15'
 cnmf_weights = pd.read_table(
     '/rds/project/rds-Nl99R8pHODQ/multiomics/programmes/cnmf/wang_2025/wang_2025_neocortex/' +
@@ -37,3 +40,6 @@ for smr_file in smr_files:
         print(f'Top 200 of {programme}:')
         top_200_genes = cnmf_weights.nlargest(200, programme).index
         extract_smr(smr_file, top_200_genes)
+
+    print('Significant transcription factors:')
+    extract_smr(smr_file, sig_tf)
