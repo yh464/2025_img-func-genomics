@@ -6,7 +6,7 @@ from scipy.cluster.hierarchy import linkage, dendrogram
 output_dir = '/rds/project/rds-Q6dKROTNf6s/Data_Users/yh464/test'
 
 # compare different parameters
-cnmf_k = 16; cnmf_dt = '0_15'; factor_order = [f'F{i}' for i in [12,15,5,9,14,2,1,8,4,6,7,11,13,3,10,16]]
+cnmf_k = 16; cnmf_dt = '0_15'; cnmf_factor_order = [f'F{i}' for i in [12,15,5,9,14,2,1,8,4,6,7,11,13,3,10,16]]
 # cnmf_k = 10; cnmf_dt = '0_1'; factor_order = [f'F{i}' for i in [9,10,4,5,6,7,8,1,2,3]]
 cnmf_weights = pd.read_table(
     '/rds/project/rds-Nl99R8pHODQ/multiomics/programmes/cnmf/wang_2025/wang_2025_neocortex/' +
@@ -25,21 +25,21 @@ for test_weights,k in zip(sensitivity_weights, sensitivity_k):
     linkage_matrix = linkage(test_weights.T, method = 'average', metric = 'correlation')
     dendrogram_res = dendrogram(linkage_matrix, no_plot = True)
     corr = pd.concat([test_weights.corrwith(cnmf_weights[f'F{i+1}']).to_frame(name = f'F{i+1}') for i in range(cnmf_k)], axis = 1)
-    corr = corr.loc[:, factor_order].iloc[dendrogram_res['leaves'], :]
+    corr = corr.loc[:, cnmf_factor_order].iloc[dendrogram_res['leaves'], :]
     out_prefix = f'{output_dir}/cnmf_corr_k{cnmf_k}_to_k{k}'
     fig = plt.figure(figsize = (10,10))
     sns.heatmap(corr, cmap = 'vlag', center = 0, yticklabels = True, xticklabels = True, square = True)
     fig.savefig(f'{out_prefix}.pdf', bbox_inches = 'tight')
     plt.close()
 
-rgipc_k = 12; rgipc_dt = '0_1'; factor_order = [f'F{i}' for i in [11,10,8,4,3,5,1,2,6,12,7,9]]
-rgipc_k = 9; rgipc_dt = '0_1'; factor_order = [f'F{i}' for i in [6,1,2,5,3,4,8,7,9]]
+# rgipc_k = 12; rgipc_dt = '0_1'; rgipc_factor_order = [f'F{i}' for i in [11,10,8,4,3,5,1,2,6,12,7,9]]
+rgipc_k = 9; rgipc_dt = '0_1'; rgipc_factor_order = [f'F{i}' for i in [6,1,2,5,3,4,8,7,9]]
 rgipc_weights = pd.read_table(
     '/rds/project/rds-Nl99R8pHODQ/multiomics/programmes/cnmf/wang_2025/wang_2025_rgipc/' +
     f'wang_2025_rgipc.spectra.k_{rgipc_k}.dt_{rgipc_dt}.consensus.txt', index_col = 0).T
 rgipc_weights.columns = [f'F{i+1}' for i in range(rgipc_k)]
 
-ipcenn_k = 11; ipcenn_dt = '0_1'; factor_order = [f'F{i}' for i in [11,4,9,10,6,8,1,2,3,5,7]]
+ipcenn_k = 11; ipcenn_dt = '0_1'; ipcenn_factor_order = [f'F{i}' for i in [11,4,9,10,6,8,1,2,3,5,7]]
 ipcenn_weights = pd.read_table(
     '/rds/project/rds-Nl99R8pHODQ/multiomics/programmes/cnmf/wang_2025/wang_2025_ipcenn/' +
     f'wang_2025_ipcenn.spectra.k_{ipcenn_k}.dt_{ipcenn_dt}.consensus.txt', index_col = 0).T
@@ -57,7 +57,7 @@ for test_weights,k in zip(sensitivity_weights, sensitivity_k):
     linkage_matrix = linkage(test_weights.T, method = 'average', metric = 'correlation')
     dendrogram_res = dendrogram(linkage_matrix, no_plot = True)
     corr = pd.concat([test_weights.corrwith(rgipc_weights[f'F{i+1}']).to_frame(name = f'F{i+1}') for i in range(rgipc_k)], axis = 1)
-    corr = corr.loc[:, factor_order].iloc[dendrogram_res['leaves'], :]
+    corr = corr.loc[:, rgipc_factor_order].iloc[dendrogram_res['leaves'], :]
     out_prefix = f'{output_dir}/rgipc_corr_k{rgipc_k}_to_k{k}'
     fig = plt.figure(figsize = (8,8))
     sns.heatmap(corr, cmap = 'vlag', center = 0, yticklabels = True, xticklabels = True, square = True)
@@ -65,7 +65,7 @@ for test_weights,k in zip(sensitivity_weights, sensitivity_k):
     plt.close()
 
     corr = pd.concat([test_weights.corrwith(ipcenn_weights[f'F{i+1}']).to_frame(name = f'F{i+1}') for i in range(ipcenn_k)], axis = 1)
-    corr = corr.loc[:, factor_order].iloc[dendrogram_res['leaves'], :]
+    corr = corr.loc[:, ipcenn_factor_order].iloc[dendrogram_res['leaves'], :]
     out_prefix = f'{output_dir}/ipcenn_corr_k{ipcenn_k}_to_k{k}'
     fig = plt.figure(figsize = (8,8))
     sns.heatmap(corr, cmap = 'vlag', center = 0, yticklabels = True, xticklabels = True, square = True)
@@ -81,7 +81,7 @@ replication_weights = pd.read_table(
 linkage_matrix = linkage(replication_weights.T, method = 'average', metric = 'correlation')
 dendrogram_res = dendrogram(linkage_matrix, no_plot = True)
 corr = pd.concat([replication_weights.corrwith(cnmf_weights[f'F{i+1}']).to_frame(name = f'F{i+1}') for i in range(cnmf_k)], axis = 1)
-corr = corr.loc[:, factor_order].iloc[dendrogram_res['leaves'], :]
+corr = corr.loc[:, cnmf_factor_order].iloc[dendrogram_res['leaves'], :]
 out_prefix = f'{output_dir}/cnmf_corr_k{cnmf_k}_to_polioudakis_k{replication_k}'
 fig = plt.figure(figsize = (10,10))
 sns.heatmap(corr, cmap = 'vlag', center = 0, yticklabels = True, xticklabels = True, square = True)
