@@ -38,12 +38,16 @@ rgipc_weights = pd.read_table(
     '/rds/project/rds-Nl99R8pHODQ/multiomics/programmes/cnmf/wang_2025/wang_2025_rgipc/' +
     f'wang_2025_rgipc.spectra.k_{rgipc_k}.dt_{rgipc_dt}.consensus.txt', index_col = 0).T
 rgipc_weights.columns = [f'F{i+1}' for i in range(rgipc_k)]
+n_overlapping_genes = rgipc_weights.index.intersection(cnmf_weights.index).size
+print(f'Number of overlapping genes between RG-IPC and main dataset: {n_overlapping_genes}')
 
 ipcenn_k = 11; ipcenn_dt = '0_1'; ipcenn_factor_order = [f'F{i}' for i in [11,4,9,10,6,8,1,2,3,5,7]]
 ipcenn_weights = pd.read_table(
     '/rds/project/rds-Nl99R8pHODQ/multiomics/programmes/cnmf/wang_2025/wang_2025_ipcenn/' +
     f'wang_2025_ipcenn.spectra.k_{ipcenn_k}.dt_{ipcenn_dt}.consensus.txt', index_col = 0).T
 ipcenn_weights.columns = [f'F{i+1}' for i in range(ipcenn_k)]
+n_overlapping_genes = ipcenn_weights.index.intersection(cnmf_weights.index).size
+print(f'Number of overlapping genes between IPC-EN and main dataset: {n_overlapping_genes}')
 
 sensitivity_k = [9, 10, 16, 36]; sensitivity_dt = ['0_1','0_1','0_15', '0_2']
 sensitivity_weights = [
@@ -78,6 +82,9 @@ replication_weights = pd.read_table(
     f'neocx_wang_2025_genes.spectra.k_{replication_k}.dt_{replication_dt}.consensus.txt',
     index_col = 0
 ).T
+n_overlapping_genes = replication_weights.index.intersection(cnmf_weights.index).size
+print(f'Number of overlapping genes between Polioudakis et al. 2019 and main dataset: {n_overlapping_genes}')
+
 linkage_matrix = linkage(replication_weights.T, method = 'average', metric = 'correlation')
 dendrogram_res = dendrogram(linkage_matrix, no_plot = True)
 corr = pd.concat([replication_weights.corrwith(cnmf_weights[f'F{i+1}']).to_frame(name = f'F{i+1}') for i in range(cnmf_k)], axis = 1)
